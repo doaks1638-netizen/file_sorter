@@ -3,24 +3,24 @@ import random
 import shutil
 
 folder_names = [
-    "alpha", "archive", "atlas", "amber", "axis", "apex", "aspect", "aura",
-    "beacon", "backup", "binary", "buffer", "blast", "bridge", "blade", "bloom",
-    "cipher", "core", "cloud", "cache", "crane", "crest", "cortex", "cosmos",
+    "alpha", "ignore_me", "atlas", "amber", "axis", "apex", "aspect", "aura",
+    "ignore_me", "backup", "binary", "buffer", "blast", "bridge", "blade", "bloom",
+    "cipher", "core", "cloud", "cache", "crane", "crest", "ignore_me", "cosmos",
     "delta", "data", "drift", "drive", "depth", "dawn", "dusk", "dist",
     "echo", "edge", "entry", "ether", "engine", "env", "epoch", "error",
     "flux", "flash", "field", "frame", "focal", "frost", "flow", "fragment",
-    "gate", "grid", "ghost", "gear", "glass", "grain", "gravity", "grove",
-    "hub", "helix", "host", "haven", "halo", "horizon", "hybrid", "haze",
+    "gate", "grid", "ghost", "gear", "ignore_me", "grain", "gravity", "grove",
+    "hub", "ignore_me", "host", "haven", "halo", "horizon", "ignore_me", "haze",
     "index", "input", "iron", "ionic", "inner", "image", "impact", "infra",
-    "junction", "joint", "jade", "jet", "jolt", "jump", "jungle", "juneau",
+    "ignore_me", "ignore_me", "jade", "jet", "jolt", "jump", "jungle", "juneau",
     "kernel", "key", "koda", "kinetic", "krypton", "kite", "knot", "knight",
     "link", "logic", "layer", "lens", "lunar", "loop", "light", "legacy",
     "matrix", "mesh", "macro", "micro", "meta", "mind", "mist", "mirror",
     "node", "nexus", "null", "nova", "net", "neon", "nerve", "notch",
     "origin", "orbit", "omega", "output", "oxide", "ocean", "optic", "outer",
-    "pulse", "proxy", "point", "phase", "pixel", "prism", "pilot", "prime",
+    "pulse", "proxy", "point", "phase", "ignore_me", "prism", "pilot", "prime",
     "quantum", "quest", "quartz", "quarry", "quark", "quick", "query", "queue",
-    "root", "relay", "range", "rift", "radar", "raw", "rise", "rotor",
+    "root", "ignore_me", "range", "rift", "radar", "raw", "rise", "rotor",
     "source", "stack", "sync", "shell", "shift", "spark", "sonic", "space",
     "trace", "target", "task", "tide", "temp", "titan", "terra", "tunnel",
     "unit", "ultra", "urban", "union", "under", "update", "uranus", "utility",
@@ -49,6 +49,9 @@ syf_list = ['.txt', '.jpg', '.py', '.json', '.csv']
 
 def Haos(path, number_dirs, number_file):
     path = Path(path)
+    if path.exists():
+        shutil.rmtree(path)
+        path.mkdir()
     all_dirs = [path]
     if number_dirs == 0 and number_file == 0:
         return
@@ -69,7 +72,4 @@ def Haos(path, number_dirs, number_file):
         new_path.touch()
         n1 += 1
 pather = input()
-shutil.rmtree(pather)
-path1 = Path(pather)
-path1.mkdir(exist_ok=True, parents=True)
 Haos(pather, 40, 40)
