@@ -1,6 +1,7 @@
 from pathlib import Path
 import random
 import shutil
+from datetime import datetime
 
 folder_names = [
     "alpha", "ignore_me", "atlas", "amber", "axis", "apex", "aspect", "aura",
@@ -49,9 +50,7 @@ syf_list = ['.txt', '.jpg', '.py', '.json', '.csv']
 
 def Haos(path, number_dirs, number_file):
     path = Path(path)
-    if path.exists():
-        shutil.rmtree(path)
-        path.mkdir()
+    path.mkdir(parents=True, exist_ok=True)
     all_dirs = [path]
     if number_dirs == 0 and number_file == 0:
         return
@@ -71,5 +70,36 @@ def Haos(path, number_dirs, number_file):
         new_path = parent / new_file
         new_path.touch()
         n1 += 1
-pather = input()
-Haos(pather, 40, 40)
+
+def sorter(path):
+    path = Path(path)
+    path.mkdir(parents=True, exist_ok=True)
+    for root, dirs, files in path.walk():
+        if 'ignore_me' in dirs:
+            dirs.remove('ignore_me')
+                
+        for file in files:
+            full_path = Path(root) / file
+            file_to = full_path.suffix.lstrip('.') + '_files' if full_path.suffix != '' else 'other' + '_files'
+            dir_to = path.parent / 'Sorted_Data' / file_to
+            final = dir_to / file
+            dir_to.mkdir(exist_ok=True, parents=True)
+            full_path.replace(final)
+        
+pather = input('Введите путь где нужно навести порядок ----> ')
+info = input('Удалить ли выбранную папку? Будет создан zip архив в обоих случаях! y/n --->')
+choise = input('Создавать Хаос? y/n ----> ')
+if choise == 'y':
+    Haos(pather, 40, 40)
+    sorter(pather)
+else:
+    sorter(pather)
+
+date_now = datetime.strftime(datetime.now(), '%d-%m-%Y')
+
+shutil.make_archive(Path(pather).parent / f'Sorted_Data_data{date_now}', 'zip', Path(pather).parent / 'Sorted_Data')
+if info == 'y':
+    shutil.rmtree(Path(pather).resolve())
+shutil.rmtree((Path(pather).parent / 'Sorted_Data').resolve())
+
+
