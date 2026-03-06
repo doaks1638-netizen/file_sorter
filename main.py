@@ -68,8 +68,8 @@ def Haos(path, number_dirs, number_file):
         new_path = parent / new_file
         new_path.touch()
         n1 += 1
-
-shutil.rmtree(r'')
-path1 = Path(r'')
+pather = input()
+shutil.rmtree(pather)
+path1 = Path(pather)
 path1.mkdir(exist_ok=True, parents=True)
-Haos(r'', 40, 40)
+Haos(pather, 40, 40)
