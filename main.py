@@ -2,6 +2,7 @@ from pathlib import Path
 import random
 import shutil
 from datetime import datetime
+import sys
 
 folder_names = [
     "alpha", "ignore_me", "atlas", "amber", "axis", "apex", "aspect", "aura",
@@ -48,58 +49,69 @@ file_list = [
 
 syf_list = ['.txt', '.jpg', '.py', '.json', '.csv']
 
-def Haos(path, number_dirs, number_file):
-    path = Path(path)
-    path.mkdir(parents=True, exist_ok=True)
-    all_dirs = [path]
-    if number_dirs == 0 and number_file == 0:
-        return
-    n = 0
-    n1 = 0
-    while n != number_dirs:
-        parent = random.choice(all_dirs)
-        new_dir = random.choice(folder_names)
-        new_path = parent / new_dir
-        new_path.mkdir(exist_ok=True, parents=True)
-        if new_path not in all_dirs:
-            all_dirs.append(new_path)
-            n += 1
-    while n1 != number_file:
-        parent = random.choice(all_dirs)
-        new_file = random.choice(file_list) + random.choice(syf_list)
-        new_path = parent / new_file
-        new_path.touch()
-        n1 += 1
+def generate_chaos(path, number_dirs, number_file):
+    try:
+        path = Path(path)
+        all_dirs = [path]
+        n = 0
+        n1 = 0
+        while n != number_dirs:
+            parent = random.choice(all_dirs)
+            new_dir = random.choice(folder_names)
+            new_path = parent / new_dir
+            new_path.mkdir(exist_ok=True, parents=True)
+            if new_path not in all_dirs:
+                all_dirs.append(new_path)
+                n += 1
+        while n1 != number_file:
+            parent = random.choice(all_dirs)
+            new_file = random.choice(file_list) + random.choice(syf_list)
+            new_path = parent / new_file
+            new_path.touch()
+            n1 += 1
+    except Exception as e:
+        print(f'ОШИБКА!!! Тип {e}')
+        sys.exit()
 
-def sorter(path):
-    path = Path(path)
-    path.mkdir(parents=True, exist_ok=True)
-    for root, dirs, files in path.walk():
-        if 'ignore_me' in dirs:
-            dirs.remove('ignore_me')
-                
-        for file in files:
-            full_path = Path(root) / file
-            file_to = full_path.suffix.lstrip('.') + '_files' if full_path.suffix != '' else 'other' + '_files'
-            dir_to = path.parent / 'Sorted_Data' / file_to
-            final = dir_to / file
-            dir_to.mkdir(exist_ok=True, parents=True)
-            full_path.replace(final)
+def sort_files(path):
+    try:
+        path = Path(path)
+        for root, dirs, files in path.walk():
+            if 'ignore_me' in dirs:
+                dirs.remove('ignore_me')
+                    
+            for file in files:
+                full_path = Path(root) / file
+                file_to = full_path.suffix.lstrip('.') + '_files' if full_path.suffix != '' else 'other' + '_files'
+                dir_to = path.parent / 'Sorted_Data' / file_to
+                final = dir_to / file
+                point = 0
+                dir_to.mkdir(exist_ok=True, parents=True)
+                while final.exists():
+                    point += 1
+                    final = dir_to / f'{Path(file).stem}{point}{Path(file).suffix}'
+                full_path.replace(final)
+    except Exception as e:
+        print(f'ОШИБКА!!! Тип {e}')
+        sys.exit()
         
 pather = input('Введите путь где нужно навести порядок ----> ')
 info = input('Удалить ли выбранную папку? Будет создан zip архив в обоих случаях! y/n --->')
 choise = input('Создавать Хаос? y/n ----> ')
-if choise == 'y':
-    Haos(pather, 40, 40)
-    sorter(pather)
+if Path(pather).exists():
+    if choise == 'y':
+        generate_chaos(pather, random.randrange(10, 100), random.randrange(10, 100))
+        sort_files(pather)
+    else:
+        sort_files(pather)
 else:
-    sorter(pather)
-
+    print('Выбран неверный путь')
+    sys.exit()
 date_now = datetime.strftime(datetime.now(), '%d-%m-%Y')
-
 shutil.make_archive(Path(pather).parent / f'Sorted_Data_data{date_now}', 'zip', Path(pather).parent / 'Sorted_Data')
 if info == 'y':
     shutil.rmtree(Path(pather).resolve())
-shutil.rmtree((Path(pather).parent / 'Sorted_Data').resolve())
+if (Path(pather).parent / 'Sorted_Data').exists():
+    shutil.rmtree((Path(pather).parent / 'Sorted_Data').resolve())
 
 
